@@ -1,0 +1,1445 @@
+<!DOCTYPE html>
+<html lang="en" class="antialiased">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title id="page-title">Ainwene Solutions International</title>
+    
+    <!-- Dynamic Favicon & Social Sharing Meta Tags -->
+    <link id="dynamic-favicon" rel="icon" type="image/png" href="">
+    <meta id="og-title" property="og:title" content="Ainwene Solutions International">
+    <meta id="og-desc" property="og:description" content="Welcome to our official business profile.">
+    <meta id="og-image" property="og:image" content="">
+    <meta property="og:type" content="website">
+    
+    <!-- PWA Manifest -->
+    <link id="pwa-manifest" rel="manifest" href="">
+    <meta name="theme-color" content="#0f172a">
+    <link rel="apple-touch-icon" href="https://placehold.co/200x200/1e293b/ffffff?text=ASI">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0f172a;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            position: relative;
+        }
+        .squircle-shape { border-radius: 22.5%; }
+        .squircle-pill { border-radius: 12px; }
+        
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.45);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .glass-button {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        @keyframes dropDown {
+            0% { opacity: 0; transform: translateY(-10px) scale(0.98); pointer-events: none;}
+            100% { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto;}
+        }
+        .animate-drop-down { animation: dropDown 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in-up { animation: fadeInUp 0.6s ease-out forwards; }
+        
+        .delay-100 { animation-delay: 100ms; }
+        .delay-150 { animation-delay: 150ms; }
+        .delay-200 { animation-delay: 200ms; }
+        .delay-300 { animation-delay: 300ms; }
+        .delay-350 { animation-delay: 350ms; }
+        .delay-400 { animation-delay: 400ms; }
+        .delay-450 { animation-delay: 450ms; }
+        .delay-500 { animation-delay: 500ms; }
+        .delay-550 { animation-delay: 550ms; }
+        .delay-600 { animation-delay: 600ms; }
+
+        @keyframes ambient-drift {
+            0% { transform: scale(1.5) translate(0, 0) rotate(0deg); }
+            33% { transform: scale(1.6) translate(4%, 3%) rotate(2deg); }
+            66% { transform: scale(1.55) translate(-4%, 2%) rotate(-2deg); }
+            100% { transform: scale(1.5) translate(0, 0) rotate(0deg); }
+        }
+        .animate-ambient-drift {
+            animation: ambient-drift 25s ease-in-out infinite alternate;
+            transform-origin: center center;
+        }
+
+        .map-pulse::after {
+            content: '';
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 36px; height: 36px;
+            background: rgba(244, 63, 94, 0.4);
+            border-radius: 50%;
+            animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+        }
+        @keyframes pulse-ring {
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(2.5); opacity: 0; }
+        }
+
+        @keyframes map-pan {
+            0% { background-position: 0px 0px; }
+            100% { background-position: 32px 32px; }
+        }
+        .animate-map-pan {
+            animation: map-pan 3s linear infinite;
+        }
+
+        @keyframes float-pin {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-4px); }
+        }
+        .animate-float-pin {
+            animation: float-pin 3s ease-in-out infinite;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: rgba(30, 41, 59, 0.5); border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.3); border-radius: 4px; }
+
+        #game-canvas {
+            image-rendering: pixelated;
+        }
+    </style>
+</head>
+<body class="text-slate-200 selection:bg-emerald-500/30 bg-slate-900">
+
+    <div id="offline-banner" class="hidden fixed top-0 left-0 w-full bg-amber-500 text-amber-950 text-[10px] font-bold text-center py-1 z-[100] uppercase tracking-wider shadow-md">
+        <i class="fa-solid fa-wifi-slash mr-1"></i> You are browsing offline
+    </div>
+
+    <div id="toast-notification" class="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50 bg-slate-800 border border-slate-700 text-white text-xs px-4 py-3 rounded-2xl shadow-2xl transition-all duration-300 opacity-0 pointer-events-none flex items-center gap-2.5 max-w-[90vw] text-center">
+        <i class="fa-solid fa-circle-info text-amber-400 text-sm shrink-0"></i>
+        <span id="toast-text">Feature coming soon in v2.0!</span>
+    </div>
+
+    <div class="fixed inset-0 z-[-3] bg-slate-900 pointer-events-none"></div>
+    <div class="fixed inset-0 z-[-2] overflow-hidden pointer-events-none">
+        <div id="ambient-logo-bg" class="absolute inset-0 bg-cover bg-center opacity-0 transition-opacity duration-1000 animate-ambient-drift" style="filter: blur(80px) saturate(200%); transform: scale(1.5);"></div>
+    </div>
+    <div class="fixed inset-0 z-[-1] bg-slate-900/70 backdrop-blur-[30px] pointer-events-none"></div>
+
+    <main class="w-full max-w-md mx-auto px-4 py-8 md:py-12 min-h-screen flex flex-col relative z-10">
+
+        <button id="install-pwa-btn" class="hidden absolute top-4 right-4 bg-white/15 hover:bg-white/25 border border-white/20 text-white text-[10px] font-bold uppercase tracking-wider px-3 py-1.5 rounded-full backdrop-blur-md transition-all shadow-lg items-center gap-1.5 z-20">
+            <i class="fa-solid fa-download"></i> Install App
+        </button>
+
+        <header class="flex flex-col items-center mb-6 opacity-0 animate-fade-in-up">
+            <div class="relative w-28 h-28 mb-4 group cursor-pointer" onclick="toggleQRModal()" id="avatar-container" title="Click to share">
+                <div id="verified-aura" class="absolute -inset-1 bg-gradient-to-tr from-emerald-500 via-sky-500 to-indigo-500 squircle-shape blur-md opacity-75 group-hover:opacity-100 transition duration-500 animate-pulse hidden"></div>
+                <div id="unverified-aura" class="absolute inset-0 bg-slate-800 squircle-shape border border-slate-700 hidden"></div>
+                <img id="profile-logo" src="" alt="Logo" class="relative w-full h-full object-cover squircle-shape border-2 border-white/20 p-1 bg-slate-900 shadow-2xl">
+                
+                <div id="avatar-qr-badge" class="hidden absolute -bottom-1 -right-1 bg-slate-900 border border-slate-700 rounded-full w-8 h-8 shadow-xl items-center justify-center transform group-hover:scale-110 group-hover:bg-emerald-500 group-hover:border-emerald-400 transition" title="Share Profile">
+                    <i class="fa-solid fa-share-nodes text-[11px] text-emerald-400 group-hover:text-white transition-colors"></i>
+                </div>
+            </div>
+
+            <h1 class="text-2xl font-bold tracking-tight text-white mb-1 flex items-center gap-1.5 justify-center text-center">
+                <span id="business-name">Loading...</span>
+                <i id="name-verified-badge" class="fa-solid fa-circle-check text-sky-400 text-sm hidden shrink-0" title="Verified Organization"></i>
+            </h1>
+            <p id="business-caption" class="text-slate-400 text-xs font-medium mb-1 text-center"></p>
+        </header>
+
+        <div id="qr-modal" class="hidden mb-6 w-full glass-panel rounded-2xl p-5 border-emerald-500/30 bg-slate-900/95 shadow-2xl relative overflow-hidden flex-col gap-4">
+            <button onclick="toggleQRModal()" class="absolute top-3 right-3 text-slate-400 hover:text-white w-8 h-8 rounded-full flex items-center justify-center bg-white/5 hover:bg-white/10 transition z-20">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            
+            <div id="shareable-card" class="flex flex-col items-center text-center p-5 rounded-[14px] bg-gradient-to-b from-slate-800 to-slate-900 border border-slate-700 relative overflow-hidden mt-2 shadow-inner">
+                <div class="absolute -top-12 -left-12 w-32 h-32 bg-emerald-500 rounded-full mix-blend-multiply filter blur-[40px] opacity-20"></div>
+                <div class="absolute -bottom-12 -right-12 w-32 h-32 bg-sky-500 rounded-full mix-blend-multiply filter blur-[40px] opacity-20"></div>
+                
+                <h3 id="qr-business-name" class="text-lg font-bold text-white mb-0.5 z-10 tracking-tight">Business Name</h3>
+                <p id="qr-business-caption" class="text-slate-400 text-xs font-medium mb-2 z-10">Caption</p>
+                
+                <div id="qr-verified-details" class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-sky-500/10 border border-sky-500/30 text-sky-300 text-[10px] font-medium mb-4 z-10 shadow-sm">
+                    <i class="fa-solid fa-circle-check"></i>
+                    <span>Verified Organization</span>
+                    <span class="opacity-50 mx-0.5">•</span>
+                    <span class="font-mono text-sky-200">TIN: <span id="qr-tin-number"></span></span>
+                </div>
+
+                <div class="p-2 bg-white shadow-xl mb-3 rounded-xl z-10">
+                    <img id="qr-code-img" src="" alt="Dynamic QR Code" class="w-40 h-40 object-contain rounded-lg">
+                </div>
+                
+                <p class="text-[11px] text-slate-400 z-10 font-medium">Scan to view official profile</p>
+            </div>
+
+            <div class="flex flex-col gap-3 w-full">
+                <div class="flex items-center gap-2 w-full">
+                    <input id="current-url-input" type="text" readonly class="bg-slate-800/80 border border-slate-700 text-slate-300 text-xs rounded-xl px-3 py-2.5 flex-1 font-mono truncate focus:outline-none shadow-inner">
+                    <button onclick="handleCopyUrl(event)" class="bg-slate-700 hover:bg-slate-600 text-white font-medium text-xs px-3.5 py-2.5 rounded-xl transition flex items-center gap-1.5 shrink-0 shadow-lg border border-slate-600">
+                        <i class="fa-solid fa-copy"></i>
+                        <span>Copy</span>
+                    </button>
+                    <button onclick="downloadCard(event)" class="bg-emerald-500 hover:bg-emerald-600 text-white font-medium text-xs px-3.5 py-2.5 rounded-xl transition flex items-center justify-center gap-1.5 shrink-0 shadow-lg shadow-emerald-500/20" title="Download Card Image">
+                        <i class="fa-solid fa-download"></i>
+                    </button>
+                </div>
+
+                <div class="flex justify-center gap-3 mt-1 pt-3 border-t border-slate-700/50">
+                    <button onclick="shareLink('whatsapp')" class="w-10 h-10 rounded-full bg-green-500/10 border border-green-500/30 text-green-400 flex items-center justify-center hover:bg-green-500 hover:text-white transition shadow-sm hover:shadow-green-500/30" title="Share via WhatsApp"><i class="fa-brands fa-whatsapp text-base"></i></button>
+                    <button onclick="shareLink('sms')" class="w-10 h-10 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 flex items-center justify-center hover:bg-amber-500 hover:text-white transition shadow-sm hover:shadow-amber-500/30" title="Share via SMS"><i class="fa-solid fa-comment-sms text-sm"></i></button>
+                    <button onclick="shareLink('facebook')" class="w-10 h-10 rounded-full bg-blue-600/10 border border-blue-600/30 text-blue-500 flex items-center justify-center hover:bg-blue-600 hover:text-white transition shadow-sm hover:shadow-blue-600/30" title="Share via Facebook"><i class="fa-brands fa-facebook-f text-sm"></i></button>
+                    <button onclick="shareLink('linkedin')" class="w-10 h-10 rounded-full bg-sky-600/10 border border-sky-600/30 text-sky-500 flex items-center justify-center hover:bg-sky-600 hover:text-white transition shadow-sm hover:shadow-sky-600/30" title="Share via LinkedIn"><i class="fa-brands fa-linkedin-in text-sm"></i></button>
+                    <button onclick="shareLink('email')" class="w-10 h-10 rounded-full bg-rose-500/10 border border-rose-500/30 text-rose-400 flex items-center justify-center hover:bg-rose-500 hover:text-white transition shadow-sm hover:shadow-rose-500/30" title="Share via Email"><i class="fa-solid fa-envelope text-sm"></i></button>
+                </div>
+            </div>
+        </div>
+
+        <div id="links-container" class="flex flex-col gap-3.5 w-full">
+            
+            <div class="flex flex-row gap-2 w-full opacity-0 animate-fade-in-up">
+                <div class="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 squircle-pill bg-slate-800/60 border border-slate-700/60 text-slate-400 font-mono text-[10px] tracking-wider truncate shadow-inner min-w-0">
+                    <i class="fa-solid fa-briefcase text-slate-500 shrink-0"></i>
+                    <span id="business-sector" class="truncate"></span>
+                </div>
+                <div class="shrink-0 flex items-center justify-center gap-1.5 px-3 py-2.5 squircle-pill bg-slate-800/60 border border-slate-700/60 text-slate-400 font-mono text-[10px] tracking-wider uppercase shadow-inner">
+                    <i class="fa-solid fa-earth-africa text-slate-500 shrink-0"></i>
+                    <span id="business-country"></span>
+                </div>
+                <div id="top-rating-box" class="hidden shrink-0 items-center justify-center gap-1.5 px-3 py-2.5 squircle-pill bg-slate-800/60 border border-slate-700/60 text-slate-300 font-mono text-[10px] tracking-wider uppercase shadow-inner cursor-pointer hover:bg-slate-700/60 hover:text-white transition" onclick="toggleLeaderboardModal()" title="View Leaderboard">
+                    <i class="fa-solid fa-star text-amber-400 text-[10px]"></i>
+                    <span id="top-rating-value" class="text-slate-300 font-bold">4.9</span>
+                </div>
+            </div>
+
+            <!-- Verified badge pill -->
+            <div id="verified-badge-pill" class="hidden w-full items-center justify-center gap-2 px-4 py-2.5 squircle-pill bg-sky-500/10 border border-sky-500/30 text-sky-300 text-xs font-medium shadow-sm opacity-0 animate-fade-in-up flex-wrap">
+                <div class="flex items-center gap-1.5">
+                    <i class="fa-solid fa-circle-check text-sky-400"></i>
+                    <span>Verified Organization</span>
+                </div>
+                <span class="text-sky-500/40">•</span>
+                <div class="flex items-center gap-1 font-mono text-[11px] text-sky-200">
+                    <span class="opacity-70">TIN:</span> <span id="tin-number"></span>
+                </div>
+            </div>
+
+            <!-- Primary Contact Actions -->
+            <div id="contact-socials-row" class="flex flex-row gap-3 w-full opacity-0 animate-fade-in-up delay-100">
+                <a id="link-whatsapp" href="#" target="_blank" class="hidden flex-1 h-[76px] flex-col items-center justify-center gap-1 bg-emerald-500/10 border border-emerald-500/40 rounded-2xl hover:bg-emerald-500/20 transition">
+                    <i class="fa-brands fa-whatsapp text-[26px] text-emerald-400"></i>
+                    <span class="text-[9px] font-normal uppercase tracking-wider text-emerald-400">WhatsApp</span>
+                </a>
+                <a id="link-call" href="#" class="hidden flex-1 h-[76px] flex-col items-center justify-center gap-1 bg-sky-500/10 border border-sky-500/40 rounded-2xl hover:bg-sky-500/20 transition">
+                    <i class="fa-solid fa-phone text-[22px] text-sky-400"></i>
+                    <span class="text-[9px] font-normal uppercase tracking-wider text-sky-400">Call Us</span>
+                </a>
+                <a id="link-message" href="#" target="_blank" class="hidden flex-1 h-[76px] flex-col items-center justify-center gap-1 bg-amber-500/10 border border-amber-500/40 rounded-2xl hover:bg-amber-500/20 transition">
+                    <i class="fa-regular fa-comment-dots text-[24px] text-amber-400"></i>
+                    <span class="text-[9px] font-normal uppercase tracking-wider text-amber-400">Message</span>
+                </a>
+            </div>
+
+            <div id="business-hours-card" class="glass-panel border border-slate-700/50 hover:border-slate-600 rounded-2xl p-4 flex flex-col opacity-0 animate-fade-in-up delay-200 transition-all duration-300 cursor-pointer group shadow-sm" onclick="toggleHoursDetail()">
+                <div class="relative z-10 flex items-center justify-between w-full gap-3">
+                    <div class="flex items-center gap-3.5 min-w-0 flex-1">
+                        <div class="w-11 h-11 shrink-0 rounded-full bg-slate-800/80 text-slate-300 flex items-center justify-center group-hover:scale-105 group-hover:bg-slate-700 group-hover:text-amber-400 transition-all duration-300 border border-slate-500/30 shadow-inner">
+                            <i class="fa-regular fa-clock text-xl"></i>
+                        </div>
+                        <div class="text-left truncate">
+                            <div class="flex items-center gap-1.5">
+                                <h2 class="text-white font-semibold text-base truncate">Bio & Hours</h2>
+                                <i class="fa-solid fa-chevron-down text-[10px] text-slate-500 group-hover:text-slate-300 transition-transform duration-300" id="hours-chevron"></i>
+                            </div>
+                            <p id="today-hours-text" class="text-slate-400 text-xs truncate">Checking...</p>
+                        </div>
+                    </div>
+                    
+                    <div id="status-pill" class="shrink-0 flex items-center gap-1.5 px-3 py-1.5 squircle-pill text-[11px] font-bold tracking-wide border transition-all">
+                        <span id="status-dot" class="w-2 h-2 rounded-full"></span>
+                        <span id="status-text">...</span>
+                    </div>
+                </div>
+
+                <div id="hours-dropdown" class="relative z-10 hidden mt-3 pt-3 border-t border-dashed border-slate-700/60 text-xs text-slate-300 flex-col gap-4">
+                    <div class="leading-relaxed text-slate-300/90 bg-slate-800/50 p-2.5 rounded-lg border border-slate-700/50">
+                        <strong class="text-white font-semibold">About Us:</strong> <span id="business-bio-text"></span>
+                    </div>
+                    
+                    <div class="flex flex-col gap-2 pb-1">
+                        <div class="flex justify-between items-center py-0.5">
+                            <span class="text-slate-400">Monday - Friday:</span>
+                            <span id="hours-mon-fri" class="font-mono text-slate-200 font-medium">--</span>
+                        </div>
+                        <div class="flex justify-between items-center py-0.5">
+                            <span class="text-slate-400">Saturday:</span>
+                            <span id="hours-sat" class="font-mono text-slate-200 font-medium">--</span>
+                        </div>
+                        <div class="flex justify-between items-center py-0.5">
+                            <span class="text-slate-400">Sunday:</span>
+                            <span id="hours-sun" class="font-mono text-rose-400 font-medium">--</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Social Links Rows -->
+            <div id="socials-row-1" class="flex flex-row gap-3 w-full opacity-0 animate-fade-in-up delay-300">
+                <a id="social-ig" href="#" target="_blank" class="hidden flex-1 glass-button rounded-2xl h-[76px] flex-col items-center justify-center gap-1">
+                    <i class="fa-brands fa-instagram text-[26px] text-slate-300"></i>
+                    <span class="text-[9px] font-normal uppercase tracking-wider text-slate-400">Instagram</span>
+                </a>
+                <a id="social-fb" href="#" target="_blank" class="hidden flex-1 glass-button rounded-2xl h-[76px] flex-col items-center justify-center gap-1">
+                    <i class="fa-brands fa-facebook-f text-[26px] text-slate-300"></i>
+                    <span class="text-[9px] font-normal uppercase tracking-wider text-slate-400">Facebook</span>
+                </a>
+                <a id="social-tk" href="#" target="_blank" class="hidden flex-1 glass-button rounded-2xl h-[76px] flex-col items-center justify-center gap-1">
+                    <i class="fa-brands fa-tiktok text-[26px] text-slate-300"></i>
+                    <span class="text-[9px] font-normal uppercase tracking-wider text-slate-400">TikTok</span>
+                </a>
+            </div>
+
+            <div id="socials-row-2" class="flex flex-row gap-3 w-full opacity-0 animate-fade-in-up delay-350">
+                <a id="social-li" href="#" target="_blank" class="hidden flex-1 glass-button rounded-2xl h-[76px] flex-col items-center justify-center gap-1">
+                    <i class="fa-brands fa-linkedin-in text-[26px] text-slate-300"></i>
+                    <span class="text-[9px] font-normal uppercase tracking-wider text-slate-400">LinkedIn</span>
+                </a>
+                <a id="social-yt" href="#" target="_blank" class="hidden flex-1 glass-button rounded-2xl h-[76px] flex-col items-center justify-center gap-1">
+                    <i class="fa-brands fa-youtube text-[26px] text-slate-300"></i>
+                    <span class="text-[9px] font-normal uppercase tracking-wider text-slate-400">YouTube</span>
+                </a>
+                <a id="social-em" href="#" class="hidden flex-1 glass-button rounded-2xl h-[76px] flex-col items-center justify-center gap-1">
+                    <i class="fa-regular fa-envelope text-[26px] text-slate-300"></i>
+                    <span class="text-[9px] font-normal uppercase tracking-wider text-slate-400">Email</span>
+                </a>
+            </div>
+
+            <div id="link-map-container" class="hidden mt-1 w-full opacity-0 animate-fade-in-up delay-400 flex-col gap-1.5">
+                <div class="flex items-center justify-between px-1">
+                    <span class="text-xs font-bold text-white flex items-center gap-1.5 uppercase tracking-wider">
+                        <i class="fa-solid fa-map-location-dot text-rose-500"></i> Visit Us (Tutembelee)
+                    </span>
+                    <span class="text-[9px] text-slate-400 font-mono">Location Map</span>
+                </div>
+                <a id="link-map" href="#" target="_blank" class="block w-full group relative rounded-2xl overflow-hidden border border-slate-700/60 bg-slate-800/80 p-4 shadow-lg transition hover:border-slate-500">
+                    <div class="absolute inset-0 bg-[radial-gradient(#334155_1px,transparent_1px)] [background-size:16px_16px] animate-map-pan opacity-40"></div>
+                    <div class="relative z-10 flex flex-col items-center map-pulse transform group-hover:scale-110 transition-transform duration-500 animate-float-pin">
+                        <div class="text-rose-500 text-3xl filter drop-shadow-[0_0_10px_rgba(244,63,94,0.6)] relative z-10">
+                            <i class="fa-solid fa-location-dot"></i>
+                        </div>
+                        <div class="mt-1 bg-slate-900/90 backdrop-blur text-white text-[10px] font-bold px-2 py-0.5 rounded shadow-lg border border-slate-700 max-w-[150px] truncate relative z-10">
+                            <span id="map-pin-name">Visit Us</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <div id="save-contact-container" class="w-full opacity-0 animate-fade-in-up delay-450 mt-0.5">
+                <button onclick="downloadVCard()" class="w-full h-12 bg-indigo-500/10 hover:bg-indigo-500/20 border border-indigo-500/30 text-indigo-300 font-semibold text-xs rounded-2xl transition flex items-center justify-center gap-2 shadow-sm">
+                    <i class="fa-solid fa-user-plus text-indigo-400"></i> Save Contact to Phone
+                </button>
+            </div>
+
+            <div id="expand-trigger-container" class="w-full opacity-0 animate-fade-in-up delay-500 mt-2">
+                <button onclick="toggleExpandableContent()" id="expand-btn" class="w-full rounded-2xl border-2 border-dashed border-emerald-500/50 bg-gradient-to-r from-emerald-500/10 via-slate-800/90 to-indigo-500/10 hover:border-emerald-400 p-4 flex items-center justify-between transition-all duration-300 shadow-xl group">
+                    <div class="flex items-center gap-3.5 min-w-0 flex-1">
+                        <div class="w-10 h-10 shrink-0 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center border border-emerald-500/30 group-hover:scale-110 transition-transform shadow-inner">
+                            <i class="fa-solid fa-boxes-packing text-lg"></i>
+                        </div>
+                        <div class="text-left truncate">
+                            <div class="flex items-center gap-2">
+                                <h2 class="text-white font-bold text-sm truncate">Browse Products & Premium Packages</h2>
+                                <span class="text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 shrink-0">Tap to View</span>
+                            </div>
+                            <p class="text-slate-400 text-[11px] truncate font-medium mt-0.5">Bidhaa Zetu, Maoni, Work & Play</p>
+                        </div>
+                    </div>
+                    <div class="text-slate-400 shrink-0 ml-2 group-hover:text-white transition-transform duration-300" id="expand-chevron">
+                        <i class="fa-solid fa-chevron-down text-sm"></i>
+                    </div>
+                </button>
+            </div>
+
+            <div id="expandable-content" class="hidden flex-col gap-3.5 w-full mt-1">
+
+                <!-- Locked Action Buttons (Register, Book, Pay) -->
+                <div id="locked-actions-row" class="flex flex-row gap-3 w-full">
+                    <div class="flex-1 glass-button rounded-2xl h-[76px] flex flex-col items-center justify-center gap-1 opacity-60 cursor-not-allowed relative overflow-hidden select-none" title="Register - Locked Feature">
+                        <i class="fa-solid fa-lock absolute top-2 right-2 text-slate-500/80 text-[10px]"></i>
+                        <i class="fa-solid fa-id-card text-[22px] text-slate-400"></i>
+                        <span class="text-[9px] font-normal uppercase tracking-wider text-slate-400">Register</span>
+                    </div>
+                    <div class="flex-1 glass-button rounded-2xl h-[76px] flex flex-col items-center justify-center gap-1 opacity-60 cursor-not-allowed relative overflow-hidden select-none" title="Book - Locked Feature">
+                        <i class="fa-solid fa-lock absolute top-2 right-2 text-slate-500/80 text-[10px]"></i>
+                        <i class="fa-regular fa-calendar-check text-[22px] text-slate-400"></i>
+                        <span class="text-[9px] font-normal uppercase tracking-wider text-slate-400">Book</span>
+                    </div>
+                    <div class="flex-1 glass-button rounded-2xl h-[76px] flex flex-col items-center justify-center gap-1 opacity-60 cursor-not-allowed relative overflow-hidden select-none" title="Pay - Locked Feature">
+                        <i class="fa-solid fa-lock absolute top-2 right-2 text-slate-500/80 text-[10px]"></i>
+                        <i class="fa-solid fa-wallet text-[22px] text-slate-400"></i>
+                        <span class="text-[9px] font-normal uppercase tracking-wider text-slate-400">Pay</span>
+                    </div>
+                </div>
+
+                <!-- Features Stack Button -->
+                <div id="link-features-stack" class="relative w-full cursor-pointer group" onclick="toggleFeaturesModal()">
+                    <div class="absolute inset-0 bg-slate-800/40 border border-slate-700/50 rounded-2xl transform translate-y-3 scale-[0.92] transition-all duration-300 group-hover:translate-y-4 group-hover:scale-[0.94] z-0"></div>
+                    <div class="absolute inset-0 bg-slate-800/60 border border-slate-600/50 rounded-2xl transform translate-y-1.5 scale-[0.96] transition-all duration-300 group-hover:translate-y-2 group-hover:scale-[0.97] z-10"></div>
+                    
+                    <div class="relative z-20 w-full rounded-2xl border-2 border-dashed border-slate-500/60 bg-slate-800/90 backdrop-blur-md p-3.5 flex items-center justify-between transition-all duration-300 group-hover:-translate-y-1 hover:border-slate-400/70 hover:bg-slate-800">
+                        <div class="flex items-center gap-3.5 flex-1 min-w-0">
+                            <div class="w-10 h-10 shrink-0 rounded-full bg-amber-500/10 text-amber-400 flex items-center justify-center border border-amber-500/20 shadow-inner">
+                                <i class="fa-solid fa-bag-shopping text-lg"></i>
+                            </div>
+                            <div class="text-left truncate">
+                                <div class="flex items-center gap-2">
+                                    <h2 class="text-slate-200 font-medium text-sm truncate">Browse Products (Bidhaa Zetu)</h2>
+                                    <span class="text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/30 shrink-0">Tap</span>
+                                </div>
+                                <p class="text-slate-400 text-[11px] truncate font-medium mt-0.5">Shop, Pay, Careers & More</p>
+                            </div>
+                        </div>
+                        <div class="text-slate-500 shrink-0 ml-3 group-hover:text-slate-300 transition-colors">
+                            <i class="fa-solid fa-chevron-up"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reviews Section -->
+                <div id="reviews-section" class="relative w-full mt-2 flex flex-col gap-3">
+                    <div class="flex items-center justify-between px-1">
+                        <h3 class="text-white font-bold text-sm flex items-center gap-2">
+                            <i class="fa-solid fa-star text-amber-400"></i> Reviews (Maoni ya Wateja)
+                        </h3>
+                        <button onclick="showComingSoonNotice()" class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/30 hover:bg-amber-500 hover:text-white transition shadow-sm">
+                            <i class="fa-solid fa-plus mr-1"></i> Rate Us / Piga Kura
+                        </button>
+                    </div>
+
+                    <div class="glass-panel rounded-2xl p-4 border-slate-700/50 flex flex-col gap-3.5 shadow-xl relative overflow-hidden">
+                        <div class="flex items-center justify-between pb-3 border-b border-slate-700/40">
+                            <div class="flex items-center gap-3">
+                                <div class="text-3xl font-extrabold text-white font-mono tracking-tight" id="average-rating-display">4.9</div>
+                                <div class="flex flex-col">
+                                    <div class="flex items-center gap-1 text-amber-400 text-xs">
+                                        <i class="fa-solid fa-star"></i>
+                                        <i class="fa-solid fa-star"></i>
+                                        <i class="fa-solid fa-star"></i>
+                                        <i class="fa-solid fa-star"></i>
+                                        <i class="fa-solid fa-star"></i>
+                                    </div>
+                                    <span class="text-[11px] text-slate-400 font-medium mt-0.5"><span id="total-reviews-count">128</span> Verified Reviews</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-1 px-2.5 py-1 rounded-full bg-sky-500/10 border border-sky-500/30 text-sky-300 text-[10px] font-semibold">
+                                <i class="fa-solid fa-shield-halved"></i> ASI Pages Reviews
+                            </div>
+                        </div>
+
+                        <div id="reviews-list-container" class="flex flex-col gap-2.5">
+                            <div class="p-3 rounded-xl bg-slate-800/50 border border-slate-700/40 flex flex-col gap-1">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-xs font-bold text-white flex items-center gap-1.5 flex-wrap">
+                                        Juma M. 
+                                        <span class="text-[9px] bg-slate-700 text-slate-300 px-1.5 py-0.5 rounded font-mono">Sample Review</span>
+                                        <span class="text-[9px] bg-emerald-500/20 text-emerald-400 px-1.5 py-0.5 rounded font-mono">Verified (+255 712***89)</span>
+                                    </span>
+                                    <span class="text-[10px] text-amber-400"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></span>
+                                </div>
+                                <p class="text-[11px] text-slate-300 italic">"Incredible service and lightning-fast response on WhatsApp. Highly professional!"</p>
+                                <span class="text-[9px] text-slate-500 text-right">2 days ago</span>
+                            </div>
+                        </div>
+
+                        <button onclick="showComingSoonNotice('Full review history & filtering available in v2.0!')" class="w-full py-2.5 px-3 rounded-xl bg-slate-800/60 hover:bg-slate-700/70 border border-slate-700/60 text-slate-300 text-xs font-medium transition flex items-center justify-center gap-1.5 shadow-sm">
+                            <span>Show All Reviews (Ona Yote)</span>
+                            <i class="fa-solid fa-chevron-down text-[10px] text-slate-400"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="arcade-section" class="relative w-full mt-1 pt-3 border-t border-slate-700/50 flex flex-col gap-3">
+                    <div class="glass-panel rounded-2xl p-4 border-slate-700/50 flex items-center justify-between shadow-xl">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-purple-500/20 text-purple-400 flex items-center justify-center border border-purple-500/30">
+                                <i class="fa-solid fa-gamepad text-lg"></i>
+                            </div>
+                            <div>
+                                <div class="flex items-center gap-2">
+                                    <h3 class="text-white font-bold text-sm">Work & Play</h3>
+                                    <span class="text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg shadow-purple-500/30">Premium</span>
+                                </div>
+                                <p class="text-slate-400 text-[11px]">Play mini-games & earn perks</p>
+                            </div>
+                        </div>
+                        <button onclick="toggleArcadeDrawer()" id="arcade-toggle-btn" class="text-xs font-semibold px-3.5 py-2 rounded-xl bg-purple-500/10 hover:bg-purple-500/20 text-purple-300 border border-purple-500/30 transition flex items-center gap-1.5 shadow-sm">
+                            <span>Open Games</span>
+                            <i class="fa-solid fa-chevron-down transition-transform duration-300" id="arcade-chevron"></i>
+                        </button>
+                    </div>
+
+                    <div id="arcade-vertical-list" class="hidden flex-col gap-2.5 mt-1 animate-drop-down">
+                        <div class="glass-panel rounded-2xl p-3 border-purple-500/40 hover:border-purple-500/70 transition cursor-pointer flex items-center justify-between shadow-md" onclick="openGame('jumper')">
+                            <div class="flex items-center gap-3.5">
+                                <div class="w-12 h-12 bg-slate-900 rounded-xl relative overflow-hidden flex items-center justify-center border border-slate-700 shrink-0">
+                                    <div class="absolute inset-0 bg-gradient-to-b from-sky-900/50 to-slate-900"></div>
+                                    <i class="fa-solid fa-plane-up text-xl text-sky-400 relative z-10"></i>
+                                </div>
+                                <div>
+                                    <div class="flex items-center gap-2">
+                                        <h4 class="text-slate-200 font-semibold text-sm">Jumper</h4>
+                                        <span class="bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-[9px] font-bold px-2 py-0.5 rounded-full uppercase">Play Now</span>
+                                    </div>
+                                    <p class="text-[11px] text-slate-400 mt-0.5">Tap to fly, dodge obstacles as speed increases.</p>
+                                </div>
+                            </div>
+                            <div class="text-purple-400 text-sm px-2"><i class="fa-solid fa-play"></i></div>
+                        </div>
+
+                        <div class="glass-panel rounded-2xl p-3 border-slate-700/50 opacity-75 flex items-center justify-between shadow-md">
+                            <div class="flex items-center gap-3.5">
+                                <div class="w-12 h-12 bg-slate-900/50 rounded-xl relative overflow-hidden flex items-center justify-center border border-slate-700/50 shrink-0">
+                                    <i class="fa-solid fa-lock text-base text-slate-500"></i>
+                                </div>
+                                <div>
+                                    <div class="flex items-center gap-2">
+                                        <h4 class="text-slate-400 font-semibold text-sm">Reflex</h4>
+                                        <span class="bg-slate-800 text-slate-400 text-[9px] font-bold px-2 py-0.5 rounded-full uppercase">Locked</span>
+                                    </div>
+                                    <p class="text-[11px] text-slate-500 mt-0.5">Test your reaction time. Unlocks in v2.0</p>
+                                </div>
+                            </div>
+                            <div class="text-slate-600 text-sm px-2"><i class="fa-solid fa-lock"></i></div>
+                        </div>
+
+                        <div class="glass-panel rounded-2xl p-3 border-slate-700/30 opacity-60 flex items-center justify-between shadow-md">
+                            <div class="flex items-center gap-3.5">
+                                <div class="w-12 h-12 bg-slate-900/30 rounded-xl relative overflow-hidden flex items-center justify-center border border-slate-700/30 shrink-0">
+                                    <i class="fa-solid fa-lock text-base text-slate-500"></i>
+                                </div>
+                                <div>
+                                    <div class="flex items-center gap-2">
+                                        <h4 class="text-slate-500 font-semibold text-sm">Cydash</h4>
+                                        <span class="bg-slate-800 text-slate-400 text-[9px] font-bold px-2 py-0.5 rounded-full uppercase">Locked</span>
+                                    </div>
+                                    <p class="text-[11px] text-slate-600 mt-0.5">Cyber adventure. Unlocks in v2.0</p>
+                                </div>
+                            </div>
+                            <div class="text-slate-600 text-sm px-2"><i class="fa-solid fa-lock"></i></div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <footer class="mt-8 text-center pb-8 opacity-0 animate-fade-in-up delay-600 flex-grow flex flex-col justify-end">
+            <div onclick="toggleLeaderboardModal()" class="mb-4 inline-flex items-center justify-center gap-2 text-[10px] font-mono text-slate-400 bg-slate-800/60 hover:bg-slate-800 hover:border-emerald-500/50 border border-slate-700/60 px-4 py-1.5 squircle-pill shadow-inner mx-auto cursor-pointer transition-all group" title="Click to view ASI Directory & Leaderboard">
+                <i class="fa-solid fa-fingerprint text-emerald-400/70 group-hover:text-emerald-400 transition-colors"></i>
+                <span id="footer-asid" class="tracking-wider font-semibold text-slate-300 group-hover:text-white transition-colors"></span>
+                <i class="fa-solid fa-chart-simple text-[9px] text-slate-500 group-hover:text-emerald-400 transition-colors ml-1"></i>
+            </div>
+            <p class="text-slate-500 text-xs font-medium">Copyright &copy; <span id="year"></span> Powered by <a href="https://aniwene.com" target="_blank" rel="noopener noreferrer" class="text-slate-500 no-underline hover:text-slate-500 cursor-pointer">A S I</a></p>
+        </footer>
+    </main>
+
+    <div id="features-modal" class="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md hidden transition-all duration-300 opacity-0 pointer-events-none">
+        <div class="bg-slate-900 border border-slate-700 w-full max-w-md rounded-3xl shadow-2xl overflow-hidden transform translate-y-10 transition-all duration-300" id="features-modal-content">
+            <div class="p-5 border-b border-slate-800 flex justify-between items-center bg-slate-800/30">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-full bg-indigo-500/20 text-indigo-400 flex items-center justify-center">
+                        <i class="fa-solid fa-sparkles text-sm"></i>
+                    </div>
+                    <h3 class="text-white font-semibold text-lg tracking-tight">Coming Soon</h3>
+                </div>
+                <button onclick="toggleFeaturesModal()" class="w-8 h-8 rounded-full bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700 transition flex items-center justify-center">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            
+            <div class="p-5 max-h-[60vh] overflow-y-auto flex flex-col gap-3 custom-scrollbar bg-gradient-to-b from-slate-900 to-slate-800/50">
+                <div class="glass-panel p-3.5 rounded-2xl flex items-center gap-3.5 border-emerald-500/30 bg-emerald-500/5">
+                    <div class="w-10 h-10 rounded-full bg-emerald-500/10 text-emerald-400 flex items-center justify-center shrink-0 border border-emerald-500/20"><i class="fa-solid fa-user-check"></i></div>
+                    <div class="flex-1">
+                        <div class="flex items-center justify-between">
+                            <h4 class="text-slate-200 text-sm font-medium">Customer Registration (Sajili Mteja)</h4>
+                            <span class="text-[9px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-bold px-2 py-0.5 rounded-full uppercase">New</span>
+                        </div>
+                        <p class="text-slate-400 text-[10px] mt-0.5">Register to receive exclusive offers, updates & digital invoices directly.</p>
+                    </div>
+                </div>
+
+                <div class="glass-panel p-3.5 rounded-2xl flex items-center gap-3.5 border-slate-700/50">
+                    <div class="w-10 h-10 rounded-full bg-amber-500/10 text-amber-400 flex items-center justify-center shrink-0 border border-amber-500/20"><i class="fa-solid fa-bag-shopping"></i></div>
+                    <div class="flex-1">
+                        <h4 class="text-slate-200 text-sm font-medium">Browse Products (Bidhaa Zetu)</h4>
+                        <p class="text-slate-400 text-[10px] mt-0.5">Browse and order products directly.</p>
+                    </div>
+                </div>
+                <div class="glass-panel p-3.5 rounded-2xl flex items-center gap-3.5 border-slate-700/50">
+                    <div class="w-10 h-10 rounded-full bg-blue-500/10 text-blue-400 flex items-center justify-center shrink-0 border border-blue-500/20"><i class="fa-solid fa-wallet"></i></div>
+                    <div class="flex-1">
+                        <h4 class="text-slate-200 text-sm font-medium">Pay Merchant (Lipa Hapa)</h4>
+                        <p class="text-slate-400 text-[10px] mt-0.5">Secure mobile money & card payments.</p>
+                    </div>
+                </div>
+                <div class="glass-panel p-3.5 rounded-2xl flex items-center gap-3.5 border-slate-700/50">
+                    <div class="w-10 h-10 rounded-full bg-pink-500/10 text-pink-400 flex items-center justify-center shrink-0 border border-pink-500/20"><i class="fa-solid fa-handshake-angle"></i></div>
+                    <div class="flex-1">
+                        <h4 class="text-slate-200 text-sm font-medium">Creator Collabs (Ubalozi)</h4>
+                        <p class="text-slate-400 text-[10px] mt-0.5">Partner with us for content creation.</p>
+                    </div>
+                </div>
+                <div class="glass-panel p-3.5 rounded-2xl flex items-center gap-3.5 border-slate-700/50">
+                    <div class="w-10 h-10 rounded-full bg-emerald-500/10 text-emerald-400 flex items-center justify-center shrink-0 border border-emerald-500/20"><i class="fa-solid fa-briefcase"></i></div>
+                    <div class="flex-1">
+                        <h4 class="text-slate-200 text-sm font-medium">Careers & Jobs (Ajira)</h4>
+                        <p class="text-slate-400 text-[10px] mt-0.5">Apply for open positions directly.</p>
+                    </div>
+                </div>
+                <div class="glass-panel p-3.5 rounded-2xl flex items-center gap-3.5 border-slate-700/50">
+                    <div class="w-10 h-10 rounded-full bg-purple-500/10 text-purple-400 flex items-center justify-center shrink-0 border border-purple-500/20"><i class="fa-regular fa-calendar-check"></i></div>
+                    <div class="flex-1">
+                        <h4 class="text-slate-200 text-sm font-medium">Appointments (Miadi)</h4>
+                        <p class="text-slate-400 text-[10px] mt-0.5">Schedule a visit or service easily.</p>
+                    </div>
+                </div>
+                <div class="glass-panel p-3.5 rounded-2xl flex items-center gap-3.5 border-slate-700/50">
+                    <div class="w-10 h-10 rounded-full bg-rose-500/10 text-rose-400 flex items-center justify-center shrink-0 border border-rose-500/20"><i class="fa-regular fa-star-half-stroke"></i></div>
+                    <div class="flex-1">
+                        <h4 class="text-slate-200 text-sm font-medium">Reviews & Feedback (Maoni)</h4>
+                        <p class="text-slate-400 text-[10px] mt-0.5">Share your experience and rate us.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="p-4 bg-slate-800/80 text-center border-t border-slate-700/50">
+                <p class="text-[10px] text-slate-400 uppercase tracking-widest font-semibold">Rolling out soon</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="leaderboard-modal" class="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4 bg-slate-900/70 backdrop-blur-md hidden transition-all duration-300 opacity-0 pointer-events-none">
+        <div class="bg-slate-900 border border-slate-700 w-full max-w-md rounded-3xl shadow-2xl overflow-hidden transform translate-y-10 transition-all duration-300" id="leaderboard-modal-content">
+            <div class="p-5 border-b border-slate-800 flex justify-between items-center bg-slate-800/40">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-full bg-amber-500/20 text-amber-400 flex items-center justify-center border border-amber-500/30">
+                        <i class="fa-solid fa-trophy text-sm"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-white font-bold text-base tracking-tight">ASI Pages Ranking</h3>
+                        <p class="text-slate-400 text-[10px]">Ranked by Verified Rating & Engagement</p>
+                    </div>
+                </div>
+                <button onclick="toggleLeaderboardModal()" class="w-8 h-8 rounded-full bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700 transition flex items-center justify-center">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="p-4 max-h-[60vh] overflow-y-auto flex flex-col gap-2.5 custom-scrollbar bg-gradient-to-b from-slate-900 to-slate-800/60" id="leaderboard-list">
+            </div>
+
+            <div class="p-3.5 bg-slate-800/80 text-center border-t border-slate-700/50 flex items-center justify-between px-5">
+                <span class="text-[10px] text-slate-400 font-mono">Powered by A S I</span>
+                <span class="text-[10px] text-emerald-400 font-semibold"><i class="fa-solid fa-star mr-1"></i> Sample Business Ratings</span>
+            </div>
+        </div>
+    </div>
+
+    <div id="game-modal" class="fixed inset-0 z-[60] bg-slate-900 hidden flex-col">
+        <div class="flex items-center justify-between p-4 bg-slate-800 border-b border-slate-700 shadow-md">
+            <h3 class="text-white font-bold" id="game-title">Jumper</h3>
+            <div class="flex items-center gap-3">
+                <span class="text-slate-400 font-mono text-sm">Score: <span id="game-score" class="text-white font-bold">0</span></span>
+                <button onclick="closeGame()" class="w-8 h-8 rounded-full bg-slate-700 text-slate-300 flex items-center justify-center hover:bg-rose-500 hover:text-white transition">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+        </div>
+        <div id="game-container" class="flex-1 relative w-full h-full bg-[#71c5cf] overflow-hidden flex items-center justify-center touch-none">
+            <canvas id="game-canvas" class="block w-full max-w-md h-full touch-none"></canvas>
+            
+            <div id="game-over-screen" class="absolute inset-0 bg-slate-900/90 backdrop-blur-sm hidden flex-col items-center justify-center z-10 p-6 text-center">
+                <h2 class="text-3xl font-bold text-white mb-2">Game Over!</h2>
+                <p class="text-slate-300 mb-8">You scored: <span id="final-score" class="text-emerald-400 font-bold text-2xl">0</span></p>
+                <div class="flex flex-col gap-3 w-full max-w-xs">
+                    <button onclick="shareGameScore()" class="bg-gradient-to-r from-sky-500 to-indigo-500 text-white font-bold px-6 py-3.5 rounded-full shadow-lg hover:scale-105 transition transform flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-share-nodes"></i> Share Score & Profile
+                    </button>
+                    <button onclick="resetGame()" class="bg-slate-700 text-white font-bold px-6 py-3.5 rounded-full shadow-lg hover:bg-slate-600 transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-rotate-right"></i> Play Again
+                    </button>
+                </div>
+            </div>
+
+            <div id="game-start-screen" class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm flex flex-col items-center justify-center z-10">
+                <i id="start-icon" class="fa-solid fa-plane-up text-4xl text-white animate-bounce mb-4"></i>
+                <h2 id="start-text" class="text-xl font-bold text-white mb-2">Tap to Play Jumper</h2>
+                <button onclick="startGame()" class="bg-sky-500 text-white font-bold px-8 py-3 rounded-full shadow-lg hover:scale-105 transition transform mt-2">Start</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const BUSINESS_SECTORS = {
+            1: "Technology & IT", 2: "Healthcare & Medicine", 3: "Food & Beverage", 4: "Hospitality & Tourism",
+            5: "Retail & Shopping", 6: "Real Estate & Property", 7: "Finance & Insurance", 8: "Education & Training",
+            9: "Construction & Engineering", 10: "Automotive & Transport", 11: "Beauty, Spa & Salon", 12: "Arts, Media",
+            13: "Consulting", 14: "Legal", 15: "Manufacturing", 16: "Agriculture", 17: "Sports", 18: "Logistics", 19: "Non-Profit"
+        };
+
+        const COUNTRIES = {
+            1: { name: "Tanzania", utcOffset: 3 },
+            2: { name: "Kenya", utcOffset: 3 },
+            3: { name: "Uganda", utcOffset: 3 },
+            4: { name: "Rwanda", utcOffset: 2 },
+            5: { name: "South Africa", utcOffset: 2 },
+            6: { name: "Nigeria", utcOffset: 1 },
+            7: { name: "Ghana", utcOffset: 0 },
+            8: { name: "United States", utcOffset: -5 },
+            9: { name: "United Kingdom", utcOffset: 0 },
+            10: { name: "United Arab Emirates", utcOffset: 4 },
+            11: { name: "India", utcOffset: 5.5 }
+        };
+
+        let BUSINESS_CONFIG = {
+            sectorId: 1, 
+            countryId: 1, 
+            name: "Ainwene Solutions International",
+            caption: "Create More Smiles",
+            bio: "We are an innovative technology and solutions provider committed to delivering world-class digital services and creating more smiles everyday.",
+            logoUrl: "https://placehold.co/200x200/1e293b/ffffff?text=ASI",
+            isVerified: true, 
+            tin: "130-569-692",
+            asid: "ASID-0000-0000-0000",
+            rating: 4.9,
+            
+            hours: {
+                weekday:  { startMins: 8 * 60, endMins: 22 * 60, display: "08:00 AM - 10:00 PM" }, 
+                saturday: { startMins: 9 * 60, endMins: 17 * 60, display: "09:00 AM - 05:00 PM" },
+                sunday:   { isClosed: true, display: "Closed" }
+            },
+            
+            socials: {
+                instagram: "https://instagram.com",
+                facebook: "https://facebook.com",
+                tiktok: "https://tiktok.com",
+                linkedin: "https://linkedin.com",
+                youtube: "https://youtube.com",
+            },
+            links: {
+                whatsapp: "https://wa.me/255743275489",
+                call: "tel:+255743275489",
+                message: "sms:+255743275489",
+                email: "mailto:info@aniwene.com",
+                mapUrl: "https://maps.app.goo.gl/vqbaoc19VRZ6783Q7"
+            }
+        };
+
+        const SAMPLE_DIRECTORY = [
+            { name: "Ainwene Solutions International", rating: 4.9, sector: "Technology & IT", asid: "ASID-4921-8842-1090", verified: true, views: "14.2k" },
+            { name: "Glory Fashion Store", rating: 4.8, sector: "Retail & Shopping", asid: "ASID-3810-1120-0041", verified: true, views: "9.8k" },
+            { name: "Apex Health Diagnostics", rating: 4.7, sector: "Healthcare & Medicine", asid: "ASID-8821-3091-7721", verified: true, views: "7.4k" },
+            { name: "Serengeti Safaris & Tours", rating: 4.7, sector: "Hospitality & Tourism", asid: "ASID-1102-9921-3310", verified: true, views: "6.1k" },
+            { name: "Swahili Roast Coffee Co.", rating: 4.6, sector: "Food & Beverage", asid: "ASID-5501-2091-8822", verified: true, views: "4.9k" }
+        ];
+
+        window.addEventListener('DOMContentLoaded', async () => {
+            const yearEl = document.getElementById('year');
+            if (yearEl) yearEl.textContent = new Date().getFullYear();
+            
+            await initializeDatabase();
+            
+            renderTemplate(BUSINESS_CONFIG);
+            setupPWA();
+            renderLeaderboardList();
+        });
+
+        async function initializeDatabase() {
+            try {
+                const hostname = window.location.hostname;
+                const pbUrl = `/api/collections/clients/records?filter=(domain='${hostname}')`;
+                
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 1200);
+                
+                const res = await fetch(pbUrl, { signal: controller.signal }).catch(() => null);
+                clearTimeout(timeoutId);
+
+                if (res && res.ok) {
+                    const data = await res.json();
+                    if (data.items && data.items.length > 0) {
+                        const record = data.items[0];
+                        BUSINESS_CONFIG = { ...BUSINESS_CONFIG, ...record };
+                    }
+                }
+            } catch (err) {
+                console.log('Using default client config state.');
+            }
+        }
+
+        let deferredPrompt;
+        function setupPWA() {
+            const manifest = {
+                name: BUSINESS_CONFIG.name + " Official Profile",
+                short_name: BUSINESS_CONFIG.name,
+                start_url: window.location.href,
+                display: "standalone",
+                background_color: "#0f172a",
+                theme_color: "#0f172a",
+                icons: [{ src: BUSINESS_CONFIG.logoUrl, sizes: "192x192", type: "image/png" }]
+            };
+            const manifestBlob = new Blob([JSON.stringify(manifest)], {type: 'application/json'});
+            const manifestEl = document.getElementById('pwa-manifest');
+            if (manifestEl) manifestEl.href = URL.createObjectURL(manifestBlob);
+
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                deferredPrompt = e;
+                const installBtn = document.getElementById('install-pwa-btn');
+                if (installBtn) {
+                    installBtn.classList.remove('hidden');
+                    installBtn.addEventListener('click', () => {
+                        installBtn.classList.add('hidden');
+                        deferredPrompt.prompt();
+                        deferredPrompt.userChoice.then(() => { deferredPrompt = null; });
+                    });
+                }
+            });
+
+            function updateOnlineStatus() {
+                const banner = document.getElementById('offline-banner');
+                if (banner) {
+                    if (navigator.onLine) banner.classList.add('hidden');
+                    else banner.classList.remove('hidden');
+                }
+            }
+            window.addEventListener('online', updateOnlineStatus);
+            window.addEventListener('offline', updateOnlineStatus);
+            updateOnlineStatus();
+        }
+
+        function updateBusinessStatus() {
+            if (!BUSINESS_CONFIG.hours) return;
+            const countryInfo = COUNTRIES[BUSINESS_CONFIG.countryId] || { utcOffset: 3 };
+            
+            const now = new Date();
+            const utcTime = now.getTime() + (now.getTimezoneOffset() * 60000);
+            const localTime = new Date(utcTime + (3600000 * countryInfo.utcOffset));
+            
+            const currentDay = localTime.getDay();
+            const currentMins = (localTime.getHours() * 60) + localTime.getMinutes();
+            
+            let todayConfig; let displayHours = "--";
+            
+            const todayHoursEl = document.getElementById('today-hours-text');
+            if (currentDay === 0) {
+                todayConfig = BUSINESS_CONFIG.hours.sunday; displayHours = todayConfig.display;
+                if (todayHoursEl) todayHoursEl.textContent = "Sunday • " + displayHours;
+            } else if (currentDay === 6) {
+                todayConfig = BUSINESS_CONFIG.hours.saturday; displayHours = todayConfig.display;
+                if (todayHoursEl) todayHoursEl.textContent = "Saturday • " + displayHours;
+            } else {
+                todayConfig = BUSINESS_CONFIG.hours.weekday; displayHours = todayConfig.display;
+                if (todayHoursEl) todayHoursEl.textContent = "Mon-Fri • " + displayHours;
+            }
+
+            const monFriEl = document.getElementById('hours-mon-fri');
+            const satEl = document.getElementById('hours-sat');
+            const sunEl = document.getElementById('hours-sun');
+            if (monFriEl) monFriEl.textContent = BUSINESS_CONFIG.hours.weekday.display;
+            if (satEl) satEl.textContent = BUSINESS_CONFIG.hours.saturday.display;
+            if (sunEl) sunEl.textContent = BUSINESS_CONFIG.hours.sunday.display;
+
+            const statusDot = document.getElementById('status-dot');
+            const statusText = document.getElementById('status-text');
+            const statusPill = document.getElementById('status-pill');
+
+            if (statusDot && statusText && statusPill) {
+                if (todayConfig.isClosed) setClosedStatus(statusDot, statusText, statusPill);
+                else {
+                    if (currentMins >= todayConfig.startMins && currentMins < todayConfig.endMins) setOpenStatus(statusDot, statusText, statusPill);
+                    else setClosedStatus(statusDot, statusText, statusPill);
+                }
+            }
+        }
+
+        function setOpenStatus(dot, text, pill) {
+            dot.className = 'w-2 h-2 rounded-full bg-emerald-400 animate-pulse';
+            text.textContent = 'OPEN NOW'; text.className = 'text-emerald-400';
+            pill.className = 'shrink-0 flex items-center gap-1.5 px-3 py-1.5 squircle-pill text-[11px] font-bold tracking-wide transition-all bg-emerald-500/10 border-emerald-500/30 border';
+        }
+
+        function setClosedStatus(dot, text, pill) {
+            dot.className = 'w-2 h-2 rounded-full bg-rose-500';
+            text.textContent = 'CLOSED'; text.className = 'text-rose-400';
+            pill.className = 'shrink-0 flex items-center gap-1.5 px-3 py-1.5 squircle-pill text-[11px] font-bold tracking-wide transition-all bg-rose-500/10 border-rose-500/30 border';
+        }
+
+        function toggleHoursDetail() {
+            const dropdown = document.getElementById('hours-dropdown');
+            const chevron = document.getElementById('hours-chevron');
+            if (!dropdown) return;
+            if (dropdown.classList.contains('hidden')) {
+                dropdown.classList.remove('hidden'); dropdown.classList.add('flex');
+                if (chevron) chevron.style.transform = 'rotate(180deg)';
+            } else {
+                dropdown.classList.add('hidden'); dropdown.classList.remove('flex');
+                if (chevron) chevron.style.transform = 'rotate(0deg)';
+            }
+        }
+
+        function renderTemplate(config) {
+            document.title = config.name;
+            const pageTitleEl = document.getElementById('page-title');
+            if (pageTitleEl) pageTitleEl.textContent = config.name;
+
+            const faviconEl = document.getElementById('dynamic-favicon');
+            if (faviconEl) faviconEl.href = config.logoUrl;
+
+            const ogTitle = document.getElementById('og-title');
+            if (ogTitle) ogTitle.content = config.name;
+
+            const ogDesc = document.getElementById('og-desc');
+            if (ogDesc) ogDesc.content = config.bio;
+
+            const ogImg = document.getElementById('og-image');
+            if (ogImg) ogImg.content = config.logoUrl;
+
+            const bName = document.getElementById('business-name');
+            if (bName) bName.textContent = config.name;
+
+            const bCap = document.getElementById('business-caption');
+            if (bCap) bCap.textContent = config.caption;
+
+            const bBio = document.getElementById('business-bio-text');
+            if (bBio) bBio.textContent = config.bio;
+
+            const qrName = document.getElementById('qr-business-name');
+            if (qrName) qrName.textContent = config.name;
+
+            const qrCap = document.getElementById('qr-business-caption');
+            if (qrCap) qrCap.textContent = config.caption;
+
+            const pinName = document.getElementById('map-pin-name');
+            if (pinName) pinName.textContent = config.name;
+            
+            const countryInfo = COUNTRIES[config.countryId] || { name: "Tanzania" };
+            const bCountry = document.getElementById('business-country');
+            if (bCountry) bCountry.textContent = countryInfo.name;
+
+            const pLogo = document.getElementById('profile-logo');
+            if (pLogo) pLogo.src = config.logoUrl;
+
+            const ambientBg = document.getElementById('ambient-logo-bg');
+            if (ambientBg && config.logoUrl) {
+                ambientBg.style.backgroundImage = `url('${config.logoUrl}')`;
+                setTimeout(() => ambientBg.classList.remove('opacity-0'), 150);
+            }
+
+            setupLink('link-whatsapp', config.links.whatsapp, true);
+            setupLink('link-call', config.links.call, true);
+            setupLink('link-message', config.links.message, true);
+
+            updateBusinessStatus();
+
+            setupLink('social-ig', config.socials.instagram, true);
+            setupLink('social-fb', config.socials.facebook, true);
+            setupLink('social-tk', config.socials.tiktok, true);
+            setupLink('social-li', config.socials.linkedin, true);
+            setupLink('social-yt', config.socials.youtube, true);
+            setupLink('social-em', config.links.email, true);
+
+            const mapLinkEl = document.getElementById('link-map');
+            if (mapLinkEl && config.links.mapUrl && config.links.mapUrl.trim() !== "") {
+                mapLinkEl.href = config.links.mapUrl;
+            }
+
+            applyVerificationState(config);
+        }
+
+        function setupLink(elementId, url, isFlexItem) {
+            const el = document.getElementById(elementId);
+            if (!el) return;
+            if (url && url.trim() !== "") {
+                el.href = url; el.classList.remove('hidden');
+                if (isFlexItem) el.classList.add('flex');
+            } else {
+                el.classList.add('hidden');
+                if (isFlexItem) el.classList.remove('flex');
+            }
+        }
+
+        function applyVerificationState(config) {
+            const verifiedAura = document.getElementById('verified-aura');
+            const unverifiedAura = document.getElementById('unverified-aura');
+            const verifiedBadgePill = document.getElementById('verified-badge-pill');
+            const avatarQrBadge = document.getElementById('avatar-qr-badge');
+            const nameVerifiedBadge = document.getElementById('name-verified-badge');
+            const topRatingBox = document.getElementById('top-rating-box');
+            
+            const socialsRow1 = document.getElementById('socials-row-1');
+            const socialsRow2 = document.getElementById('socials-row-2');
+            const linkMapContainer = document.getElementById('link-map-container');
+            const arcadeSection = document.getElementById('arcade-section');
+            const reviewsSection = document.getElementById('reviews-section');
+
+            const qrTin = document.getElementById('qr-tin-number');
+            if (qrTin) qrTin.textContent = config.tin || "N/A";
+
+            const bSector = document.getElementById('business-sector');
+            if (bSector) bSector.textContent = BUSINESS_SECTORS[config.sectorId] || "Unspecified Sector";
+
+            const fAsid = document.getElementById('footer-asid');
+            if (fAsid) fAsid.textContent = config.asid;
+
+            if (config.isVerified) {
+                if (verifiedAura) verifiedAura.classList.remove('hidden');
+                if (verifiedBadgePill) { verifiedBadgePill.classList.remove('hidden'); verifiedBadgePill.classList.add('flex'); }
+                if (nameVerifiedBadge) nameVerifiedBadge.classList.remove('hidden');
+                
+                const tinNum = document.getElementById('tin-number');
+                if (tinNum) tinNum.textContent = config.tin || "N/A";
+                
+                if (topRatingBox) { topRatingBox.classList.remove('hidden'); topRatingBox.classList.add('flex'); }
+                
+                const topVal = document.getElementById('top-rating-value');
+                if (topVal) topVal.textContent = config.rating || "4.9";
+
+                const avgDisp = document.getElementById('average-rating-display');
+                if (avgDisp) avgDisp.textContent = config.rating || "4.9";
+                
+                if (avatarQrBadge) { avatarQrBadge.classList.remove('hidden'); avatarQrBadge.classList.add('flex'); }
+                if (unverifiedAura) unverifiedAura.classList.add('hidden');
+
+                if (socialsRow1) { socialsRow1.classList.remove('hidden'); socialsRow1.classList.add('flex'); }
+                if (socialsRow2) { socialsRow2.classList.remove('hidden'); socialsRow2.classList.add('flex'); }
+                if (linkMapContainer && config.links.mapUrl) { linkMapContainer.classList.remove('hidden'); linkMapContainer.classList.add('flex'); }
+                if (arcadeSection) arcadeSection.classList.remove('hidden');
+                if (reviewsSection) reviewsSection.classList.remove('hidden');
+
+                setupDynamicQR();
+            } else {
+                if (verifiedAura) verifiedAura.classList.add('hidden');
+                if (verifiedBadgePill) { verifiedBadgePill.classList.add('hidden'); verifiedBadgePill.classList.remove('flex'); }
+                if (nameVerifiedBadge) nameVerifiedBadge.classList.add('hidden');
+                if (avatarQrBadge) { avatarQrBadge.classList.add('hidden'); avatarQrBadge.classList.remove('flex'); }
+                if (unverifiedAura) unverifiedAura.classList.remove('hidden');
+                
+                const qrModal = document.getElementById('qr-modal');
+                if (qrModal) qrModal.classList.add('hidden');
+                
+                if (topRatingBox) { topRatingBox.classList.add('hidden'); topRatingBox.classList.remove('flex'); }
+
+                if (socialsRow1) { socialsRow1.classList.add('hidden'); socialsRow1.classList.remove('flex'); }
+                if (socialsRow2) { socialsRow2.classList.add('hidden'); socialsRow2.classList.remove('flex'); }
+                if (linkMapContainer) { linkMapContainer.classList.add('hidden'); linkMapContainer.classList.remove('flex'); }
+                if (arcadeSection) arcadeSection.classList.add('hidden');
+                if (reviewsSection) reviewsSection.classList.add('hidden');
+            }
+        }
+
+        function toggleExpandableContent() {
+            const container = document.getElementById('expandable-content');
+            const chevron = document.getElementById('expand-chevron');
+            if (!container) return;
+            
+            if (container.classList.contains('hidden')) {
+                container.classList.remove('hidden');
+                container.classList.add('flex', 'animate-drop-down');
+                if (chevron) chevron.style.transform = 'rotate(180deg)';
+            } else {
+                container.classList.add('hidden');
+                container.classList.remove('flex', 'animate-drop-down');
+                if (chevron) chevron.style.transform = 'rotate(0deg)';
+            }
+        }
+
+        function setupDynamicQR() {
+            let safeUrl = window.location.protocol === 'blob:' || window.location.protocol === 'about:' 
+                ? "https://www.asi.co.tz" : window.location.origin + window.location.pathname;
+            
+            const urlInput = document.getElementById('current-url-input');
+            if (urlInput) urlInput.value = safeUrl;
+
+            const qrImg = document.getElementById('qr-code-img');
+            if (qrImg) qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(safeUrl)}&color=0f172a`;
+        }
+
+        function toggleQRModal() {
+            if (!BUSINESS_CONFIG.isVerified) return;
+            const qrModal = document.getElementById('qr-modal');
+            if (!qrModal) return;
+            if (qrModal.classList.contains('hidden')) {
+                qrModal.classList.remove('hidden'); qrModal.classList.add('flex', 'animate-drop-down');
+            } else {
+                qrModal.classList.add('hidden'); qrModal.classList.remove('flex', 'animate-drop-down');
+            }
+        }
+
+        function toggleFeaturesModal() {
+            const modal = document.getElementById('features-modal');
+            const content = document.getElementById('features-modal-content');
+            if (!modal || !content) return;
+            if (modal.classList.contains('hidden')) {
+                modal.classList.remove('hidden');
+                setTimeout(() => {
+                    modal.classList.remove('opacity-0', 'pointer-events-none');
+                    content.classList.remove('translate-y-10'); content.classList.add('translate-y-0');
+                }, 10);
+            } else {
+                modal.classList.add('opacity-0', 'pointer-events-none');
+                content.classList.remove('translate-y-0'); content.classList.add('translate-y-10');
+                setTimeout(() => { modal.classList.add('hidden'); }, 300);
+            }
+        }
+
+        function toggleLeaderboardModal() {
+            const modal = document.getElementById('leaderboard-modal');
+            const content = document.getElementById('leaderboard-modal-content');
+            if (!modal || !content) return;
+            if (modal.classList.contains('hidden')) {
+                modal.classList.remove('hidden');
+                setTimeout(() => {
+                    modal.classList.remove('opacity-0', 'pointer-events-none');
+                    content.classList.remove('translate-y-10'); content.classList.add('translate-y-0');
+                }, 10);
+            } else {
+                modal.classList.add('opacity-0', 'pointer-events-none');
+                content.classList.remove('translate-y-0'); content.classList.add('translate-y-10');
+                setTimeout(() => { modal.classList.add('hidden'); }, 300);
+            }
+        }
+
+        function renderLeaderboardList() {
+            const container = document.getElementById('leaderboard-list');
+            if (!container) return;
+            
+            const sorted = [...SAMPLE_DIRECTORY].sort((a, b) => b.rating - a.rating);
+            
+            container.innerHTML = sorted.map((item, index) => `
+                <div class="glass-panel p-3 rounded-2xl flex items-center justify-between border-slate-700/50 hover:border-amber-500/40 transition">
+                    <div class="flex items-center gap-3 min-w-0 flex-1">
+                        <div class="w-7 h-7 shrink-0 rounded-full ${index === 0 ? 'bg-amber-500 text-slate-900' : 'bg-slate-800 text-slate-300'} text-xs font-bold font-mono flex items-center justify-center">
+                            #${index + 1}
+                        </div>
+                        <div class="truncate">
+                            <h4 class="text-white font-semibold text-xs truncate flex items-center gap-1">
+                                <span>${item.name}</span>
+                                ${item.verified ? '<i class="fa-solid fa-circle-check text-sky-400 text-[10px]"></i>' : ''}
+                            </h4>
+                            <p class="text-slate-400 text-[10px] font-mono truncate">${item.sector} • ${item.asid}</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2 shrink-0 ml-2">
+                        <span class="text-amber-400 text-xs font-bold font-mono flex items-center gap-1">
+                            <i class="fa-solid fa-star text-[10px]"></i> ${item.rating}
+                        </span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function showComingSoonNotice(customText) {
+            const toast = document.getElementById('toast-notification');
+            const toastText = document.getElementById('toast-text');
+            if (!toast || !toastText) return;
+            toastText.textContent = customText || "Rate Us (Piga Kura) feature with customer phone verification is coming soon in v2.0!";
+            toast.classList.remove('opacity-0', 'pointer-events-none');
+            toast.classList.add('opacity-100');
+            setTimeout(() => {
+                toast.classList.remove('opacity-100');
+                toast.classList.add('opacity-0', 'pointer-events-none');
+            }, 3500);
+        }
+
+        function handleCopyUrl(event) {
+            const urlInput = document.getElementById('current-url-input');
+            if (!urlInput) return;
+            urlInput.select(); urlInput.setSelectionRange(0, 99999);
+            try {
+                if(navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(urlInput.value);
+                else document.execCommand('copy');
+                const btn = event.currentTarget; const originalHTML = btn.innerHTML;
+                btn.innerHTML = '<i class="fa-solid fa-check"></i><span>Copied!</span>';
+                setTimeout(() => { btn.innerHTML = originalHTML; }, 2000);
+            } catch (err) { console.error('Copy failed', err); }
+        }
+
+        function downloadVCard() {
+            const vcard = `BEGIN:VCARD\nVERSION:3.0\nFN:${BUSINESS_CONFIG.name}\nNOTE:${BUSINESS_CONFIG.caption}\nTEL:${BUSINESS_CONFIG.links.whatsapp}\nEMAIL:${BUSINESS_CONFIG.links.email}\nEND:VCARD`;
+            const blob = new Blob([vcard], { type: 'text/vcard' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${BUSINESS_CONFIG.name.replace(/\s+/g, '_')}.vcf`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        }
+
+        function shareLink(platform) {
+            const urlInput = document.getElementById('current-url-input');
+            const url = urlInput ? urlInput.value : window.location.href;
+            const text = `Check out ${BUSINESS_CONFIG.name}'s Official Profile: `;
+            const eUrl = encodeURIComponent(url); const eText = encodeURIComponent(text);
+            let sUrl = '';
+            switch(platform) {
+                case 'whatsapp': sUrl = `https://api.whatsapp.com/send?text=${eText}${eUrl}`; break;
+                case 'sms': sUrl = `sms:?body=${eText}${eUrl}`; break;
+                case 'facebook': sUrl = `https://www.facebook.com/sharer/sharer.php?u=${eUrl}`; break;
+                case 'linkedin': sUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${eUrl}`; break;
+                case 'email': sUrl = `mailto:?subject=${encodeURIComponent(BUSINESS_CONFIG.name)}&body=${eText}${eUrl}`; break;
+            }
+            if (sUrl) window.open(sUrl, '_blank');
+        }
+
+        async function downloadCard(event) {
+            const card = document.getElementById('shareable-card'); const btn = event.currentTarget;
+            if (card && window.html2canvas) {
+                try {
+                    const oHtml = btn.innerHTML; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+                    const canvas = await html2canvas(card, { backgroundColor: '#0f172a', scale: 2, useCORS: true });
+                    const link = document.createElement('a');
+                    link.download = `${BUSINESS_CONFIG.name.replace(/\s+/g, '_')}_Card.png`;
+                    link.href = canvas.toDataURL('image/png'); link.click();
+                    btn.innerHTML = '<i class="fa-solid fa-check"></i>';
+                    setTimeout(() => { btn.innerHTML = oHtml; }, 2000);
+                } catch(e) { console.error(e); }
+            }
+        }
+
+        function toggleArcadeDrawer() {
+            const list = document.getElementById('arcade-vertical-list');
+            const chevron = document.getElementById('arcade-chevron');
+            const toggleBtn = document.getElementById('arcade-toggle-btn');
+            if (!list || !toggleBtn) return;
+            const btnText = toggleBtn.querySelector('span');
+            if (list.classList.contains('hidden')) {
+                list.classList.remove('hidden'); list.classList.add('flex');
+                if (chevron) chevron.style.transform = 'rotate(180deg)';
+                if (btnText) btnText.textContent = 'Close Games';
+            } else {
+                list.classList.add('hidden'); list.classList.remove('flex');
+                if (chevron) chevron.style.transform = 'rotate(0deg)';
+                if (btnText) btnText.textContent = 'Open Games';
+            }
+        }
+
+        let gameLoop, canvas, ctx;
+        let gameRunning = false;
+        let globalScore = 0;
+        let frames = 0;
+        let bird = { x: 50, y: 150, velocity: 0, gravity: 0.45, jump: -6.5, size: 20 };
+        let pipes = [];
+
+        function openGame(gameId) {
+            const gameModal = document.getElementById('game-modal');
+            if (!gameModal) return;
+            gameModal.classList.remove('hidden');
+            gameModal.classList.add('flex');
+            
+            const gTitle = document.getElementById('game-title');
+            if (gTitle) gTitle.innerHTML = 'Jumper';
+            
+            const sIcon = document.getElementById('start-icon');
+            if (sIcon) sIcon.className = 'fa-solid fa-plane-up text-4xl text-white animate-bounce mb-4';
+            
+            const sText = document.getElementById('start-text');
+            if (sText) sText.textContent = 'Tap to Fly & Dodge Obstacles';
+
+            canvas = document.getElementById('game-canvas');
+            if (!canvas) return;
+            ctx = canvas.getContext('2d');
+            const rect = canvas.getBoundingClientRect();
+            canvas.width = rect.width; canvas.height = rect.height;
+
+            setupGameControls();
+            showStartScreen();
+        }
+
+        function setupGameControls() {
+            if (!canvas) return;
+            canvas.ontouchstart = null; canvas.onmousedown = null;
+            
+            const interactionHandler = (e) => {
+                e.preventDefault();
+                const startScreen = document.getElementById('game-start-screen');
+                const overScreen = document.getElementById('game-over-screen');
+                if (!gameRunning && startScreen && !startScreen.classList.contains('hidden')) { startGame(); return; }
+                if (!gameRunning && overScreen && !overScreen.classList.contains('hidden')) { resetGame(); return; }
+                if (!gameRunning) return;
+
+                bird.velocity = bird.jump;
+            };
+            canvas.addEventListener('mousedown', interactionHandler);
+            canvas.addEventListener('touchstart', interactionHandler, {passive: false});
+        }
+
+        function closeGame() {
+            const gameModal = document.getElementById('game-modal');
+            if (gameModal) {
+                gameModal.classList.add('hidden');
+                gameModal.classList.remove('flex');
+            }
+            gameRunning = false; cancelAnimationFrame(gameLoop);
+        }
+
+        function showStartScreen() {
+            const startScreen = document.getElementById('game-start-screen');
+            const overScreen = document.getElementById('game-over-screen');
+            if (startScreen) startScreen.classList.remove('hidden');
+            if (overScreen) overScreen.classList.add('hidden');
+            drawJumpInitial();
+        }
+
+        function resetGame() {
+            globalScore = 0; frames = 0;
+            const scoreEl = document.getElementById('game-score');
+            if (scoreEl) scoreEl.textContent = globalScore;
+            
+            const overScreen = document.getElementById('game-over-screen');
+            const startScreen = document.getElementById('game-start-screen');
+            if (overScreen) overScreen.classList.add('hidden');
+            if (startScreen) startScreen.classList.remove('hidden');
+            
+            if (canvas) bird.y = canvas.height / 2; 
+            bird.velocity = 0; pipes = []; drawJumpInitial();
+        }
+
+        function startGame() {
+            const startScreen = document.getElementById('game-start-screen');
+            if (startScreen) startScreen.classList.add('hidden');
+            if(!gameRunning) {
+                gameRunning = true;
+                bird.velocity = bird.jump;
+                updateGameLoop();
+            }
+        }
+
+        function updateGameLoop() {
+            if (!gameRunning) return;
+            runJumpLogic();
+            frames++;
+            gameLoop = requestAnimationFrame(updateGameLoop);
+        }
+
+        function drawJumpInitial() {
+            if (!ctx || !canvas) return;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "#ded895"; ctx.fillRect(0, canvas.height - 40, canvas.width, 40);
+            ctx.fillStyle = "#73bf2e"; ctx.fillRect(0, canvas.height - 40, canvas.width, 10);
+            ctx.fillStyle = "#0f172a"; ctx.fillRect(bird.x, canvas.height/2, bird.size, bird.size);
+            ctx.strokeStyle = "#38bdf8"; ctx.lineWidth = 2; ctx.strokeRect(bird.x, canvas.height/2, bird.size, bird.size);
+        }
+
+        function runJumpLogic() {
+            if (!ctx || !canvas) return;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            let currentPipeSpeed = 2.5 + Math.min(4, globalScore * 0.15);
+            let spawnInterval = Math.max(60, 90 - Math.floor(globalScore * 1.5));
+
+            bird.velocity += bird.gravity; 
+            bird.y += bird.velocity;
+            
+            if (bird.y + bird.size >= canvas.height - 40) { gameOver(); return; }
+            if (bird.y <= 0) { bird.y = 0; bird.velocity = 0; }
+
+            if (frames % spawnInterval === 0) {
+                let gap = Math.max(110, 140 - Math.floor(globalScore * 0.7));
+                let topHeight = Math.random() * (canvas.height - gap - 100) + 20;
+                pipes.push({ x: canvas.width, width: 40, topHeight: topHeight, gap: gap, passed: false });
+            }
+
+            for (let i = 0; i < pipes.length; i++) {
+                let p = pipes[i]; 
+                p.x -= currentPipeSpeed;
+                
+                ctx.fillStyle = "#74bf2e"; 
+                ctx.fillRect(p.x, 0, p.width, p.topHeight); 
+                ctx.fillRect(p.x, p.topHeight + p.gap, p.width, canvas.height);
+                ctx.strokeStyle = "#558c22"; ctx.lineWidth = 2; 
+                ctx.strokeRect(p.x, 0, p.width, p.topHeight); 
+                ctx.strokeRect(p.x, p.topHeight + p.gap, p.width, canvas.height);
+
+                if (bird.x < p.x + p.width && bird.x + bird.size > p.x && (bird.y < p.topHeight || bird.y + bird.size > p.topHeight + p.gap)) { 
+                    gameOver(); 
+                    return; 
+                }
+                if (p.x + p.width < bird.x && !p.passed) { 
+                    globalScore++; 
+                    p.passed = true; 
+                    const scoreEl = document.getElementById('game-score');
+                    if (scoreEl) scoreEl.textContent = globalScore; 
+                }
+            }
+            pipes = pipes.filter(p => p.x + p.width > 0);
+
+            ctx.fillStyle = "#ded895"; ctx.fillRect(0, canvas.height - 40, canvas.width, 40);
+            ctx.fillStyle = "#73bf2e"; ctx.fillRect(0, canvas.height - 40, canvas.width, 10);
+            
+            ctx.save(); 
+            ctx.translate(bird.x + bird.size/2, bird.y + bird.size/2);
+            ctx.rotate(Math.min(Math.PI / 4, Math.max(-Math.PI / 4, (bird.velocity * 0.1))));
+            ctx.fillStyle = "#0f172a"; ctx.fillRect(-bird.size/2, -bird.size/2, bird.size, bird.size);
+            ctx.strokeStyle = "#38bdf8"; ctx.lineWidth = 2; ctx.strokeRect(-bird.size/2, -bird.size/2, bird.size, bird.size);
+            ctx.restore();
+        }
+
+        function gameOver() {
+            gameRunning = false;
+            const overScreen = document.getElementById('game-over-screen');
+            if (overScreen) {
+                overScreen.classList.remove('hidden');
+                overScreen.classList.add('flex');
+            }
+            const finalScore = document.getElementById('final-score');
+            if (finalScore) finalScore.textContent = globalScore;
+        }
+
+        function shareGameScore() {
+            const text = `I just scored ${globalScore} in Jumper on ${BUSINESS_CONFIG.name}'s Official Profile! Can you beat my score? 🎮🏆`;
+            const urlInput = document.getElementById('current-url-input');
+            const url = urlInput ? urlInput.value : window.location.href;
+            
+            if (navigator.share) {
+                navigator.share({ title: BUSINESS_CONFIG.name + ' Arcade', text: text, url: url })
+                .catch(console.error);
+            } else {
+                const sUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(text + " Play here: " + url)}`;
+                window.open(sUrl, '_blank');
+            }
+        }
+    </script>
+</body>
+</html>
